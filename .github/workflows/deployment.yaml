@@ -21,7 +21,7 @@ jobs:
       - name: Debug
         run: |
           docker --version
-          docker buildx --version
+          docker buildx version
           which docker
 
       - name: Build & Push Docker image
