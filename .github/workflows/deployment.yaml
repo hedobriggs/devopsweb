@@ -21,15 +21,12 @@ jobs:
       - name: Disable Buildx
         run: docker buildx rm default || true
 
-      - name: Build Docker image
+      - name: Build & Push Docker image
         run: |
           TAG=${GITHUB_RUN_NUMBER}
-          docker build . -t ${{ secrets.DOCKERHUB_REPO }}:$TAG
-
-      - name: Push Docker Image
-        run: |
-          TAG=${GITHUB_RUN_NUMBER}
-          docker push ${{ secrets.DOCKERHUB_REPO }}:$TAG
+          IMAGE=${{ secrets.DOCKER_REPO }}
+          docker build . -t $IMAGE:$TAG .
+          docker push $IMAGE:$TAG
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
