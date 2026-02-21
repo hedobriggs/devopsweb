@@ -28,8 +28,7 @@ jobs:
         run: |
           TAG=${GITHUB_RUN_NUMBER}
           IMAGE=${{ secrets.DOCKER_REPO }}
-          docker build buildx --load -t ${{ secrets.DOCKERHUB_REPO }}:$TAG .
-          docker push $IMAGE:$TAG
+          docker buildx build --push -t ${{ secrets.DOCKERHUB_REPO }}:$TAG .
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
