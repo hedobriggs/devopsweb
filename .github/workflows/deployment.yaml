@@ -4,44 +4,43 @@ on:
   push:
     branches: ["main"]
 
-jobs: 
+jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      
-      
-      #Login to Docker Hub
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN}}
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # Build Image with Auti-Increment
-    - name: Build Docker image
-      run: |
-        TAG=${{ github.run.number }}
-        docker build -t {{ secrets.DOCKERHUB_REPO }}:$TAG .
-      
-      # Push Image to Dockerhub
-    - name: Push Docker Image
-      run: |
-        TAG=${{ github.run.number }}
-        docker push ${{ secrets.DOCKERHUB_REPO }}:$TAG
+        #Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # DEPLOY TO AMAZON EC2
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          TAG=${{ secrets.run_number }}
-          docker stop app || true
-          docker rm app || true
-          docler pull ${{ secrets.DOCKERHUB_REPO }}:$TAG
-          docker run -d --name app -p 80:80 ${{ secrets.DOCKERHUB_REPO}}:$TAG
+        # Build Image with Auti-Increment
+      - name: Build Docker image
+        run: |
+          TAG=${{ github.run.number }}
+          docker build -t {{ secrets.DOCKERHUB_REPO }}:$TAG .
+
+        # Push Image to Dockerhub
+      - name: Push Docker Image
+        run: |
+          TAG=${{ github.run.number }}
+          docker push ${{ secrets.DOCKERHUB_REPO }}:$TAG
+
+        # DEPLOY TO AMAZON EC2
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            TAG=${{ secrets.run_number }}
+            docker stop app || true
+            docker rm app || true
+            docler pull ${{ secrets.DOCKERHUB_REPO }}:$TAG
+            docker run -d --name app -p 80:80 ${{ secrets.DOCKERHUB_REPO}}:$TAG
