@@ -19,6 +19,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+        #disable Buildx
+        run: |
+          docker buildx rm default || true
+
         # Build Image with Auti-Increment
       - name: Build Docker image
         run: |
@@ -26,7 +30,7 @@ jobs:
           ls -R .
           TAG=${GITHUB_RUN_NUMBER}
           echo "Using TAG: $TAG"
-          docker build . -t {{ secrets.DOCKERHUB_REPO }}:$TAG
+          docker build ./website -t {{ secrets.DOCKERHUB_REPO }}:$TAG
 
         # Push Image to Dockerhub
       - name: Push Docker Image
