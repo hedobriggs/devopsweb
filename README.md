@@ -82,3 +82,5 @@ Shellsudo certbot certificatesShow more lines
 - Builds and pushes the Docker image
 - SSHes into your EC2 instance
 - Stops, removes, pulls, and runs the new container
+
+![Guthub Actions](GitHub-Actions.png)
