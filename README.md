@@ -34,7 +34,7 @@ Here is the Dockerfile used in the repository:
 
 ```Dockerfile
 
-## **GitHub Actions Workflow**
+## GitHub Actions Workflow
 
 Your pipeline is defined in:
 
