@@ -33,17 +33,6 @@ Before anything can be deployed, your app needs to be packaged into a Docker ima
 Here is the Dockerfile used in the repository:
 
 
-
-```Dockerfile
-
----
-
-## GitHub Actions Workflow
-
-Your pipeline is defined in:
-
-```.github/workflows/deployment.yaml
-
 Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
 Step 1: Install and Start Nginx
 Nginx will act as your reverse proxy and HTTPS termination layer.
