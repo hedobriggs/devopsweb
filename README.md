@@ -40,7 +40,7 @@ Shellsudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
 
 ### Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
-   sudo dnf install -y certbot python3-certbot-nginxShow more lines
+   sudo dnf install -y certbot python3-certbot-nginx
 
 ### Step 3: Configure Nginx as a Reverse Proxy
 Create a config file for your domain:
