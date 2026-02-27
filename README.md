@@ -36,7 +36,7 @@ Here is the Dockerfile used in the repository:
 ## Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
 ### Step 1: Install and Start Nginx
 Nginx will act as your reverse proxy and HTTPS termination layer.
-Shellsudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
+   sudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
 
 ### Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
@@ -58,12 +58,13 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+
 Test and reload:
-Shellsudo nginx -tsudo systemctl reload nginxShow more lines
+sudo nginx -tsudo systemctl reload nginx
 Your site should now load over HTTP.
 
 ### Step 4: Request Your SSL Certificate
-Shellsudo certbot --nginx -d nnamdidevops.uk -d www.nnamdidevops.ukShow more lines
+sudo certbot --nginx -d nnamdidevops.uk -d www.nnamdidevops.uk
 
 ### Step 5: Verify HTTPS
 Your site is now HTTPS-secured.
