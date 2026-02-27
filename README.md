@@ -40,13 +40,24 @@ Shellsudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
 
 ### Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
-Shellsudo dnf install -y certbot python3-certbot-nginxShow more lines
+   sudo dnf install -y certbot python3-certbot-nginxShow more lines
 
 ### Step 3: Configure Nginx as a Reverse Proxy
 Create a config file for your domain:
-Shellsudo vi /etc/nginx/conf.d/example.confShow more lines
+  sudo vi /etc/nginx/conf.d/example.conf
 Add:
-Nginx Configserver {    listen 80;    server_name nnamdidevops.uk www.nnamdidevops.uk;    location / {        proxy_pass http://127.0.0.1:3000;        proxy_set_header Host $host;        proxy_set_header X-Real-IP $remote_addr;        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;        proxy_set_header X-Forwarded-Proto $scheme;    }}Show more lines
+server {
+    listen 80;
+    server_name nnamdidevops.uk www.nnamdidevops.uk;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
 Test and reload:
 Shellsudo nginx -tsudo systemctl reload nginxShow more lines
 Your site should now load over HTTP.
