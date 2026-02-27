@@ -36,15 +36,16 @@ Here is the Dockerfile used in the repository:
 ## Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
 ### Step 1: Install and Start Nginx
 Nginx will act as your reverse proxy and HTTPS termination layer.
-   sudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
+- sudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
 
 ### Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
-   sudo dnf install -y certbot python3-certbot-nginx
+- sudo dnf install -y certbot python3-certbot-nginx
 
 ### Step 3: Configure Nginx as a Reverse Proxy
 Create a config file for your domain:
-  sudo vi /etc/nginx/conf.d/example.conf
+- sudo vi /etc/nginx/conf.d/example.conf
+
 Add:
 server {
     listen 80;
@@ -60,7 +61,7 @@ server {
 }
 
 Test and reload:
-sudo nginx -tsudo systemctl reload nginx
+- sudo nginx -tsudo systemctl reload nginx
 Your site should now load over HTTP.
 
 ### Step 4: Request Your SSL Certificate
@@ -76,8 +77,8 @@ Shellsudo certbot certificatesShow more lines
 
 ## Understanding What the Pipeline Does
 
-Triggered by pushing to main
-Logs into Docker Hub
-Builds and pushes the Docker image
-SSHes into your EC2 instance
-Stops, removes, pulls, and runs the new container
+- Triggered by pushing to main
+- Logs into Docker Hub
+- Builds and pushes the Docker image
+- SSHes into your EC2 instance
+- Stops, removes, pulls, and runs the new container
