@@ -33,16 +33,16 @@ Before anything can be deployed, your app needs to be packaged into a Docker ima
 Here is the Dockerfile used in the repository:
 
 
-Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
-Step 1: Install and Start Nginx
+## Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
+# Step 1: Install and Start Nginx
 Nginx will act as your reverse proxy and HTTPS termination layer.
 Shellsudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
 
-Step 2: Install Certbot (Let's Encrypt Client)
+# Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
 Shellsudo dnf install -y certbot python3-certbot-nginxShow more lines
 
-Step 3: Configure Nginx as a Reverse Proxy
+# Step 3: Configure Nginx as a Reverse Proxy
 Create a config file for your domain:
 Shellsudo vi /etc/nginx/conf.d/example.confShow more lines
 Add:
@@ -51,18 +51,18 @@ Test and reload:
 Shellsudo nginx -tsudo systemctl reload nginxShow more lines
 Your site should now load over HTTP.
 
-Step 4: Request Your SSL Certificate
+# Step 4: Request Your SSL Certificate
 Shellsudo certbot --nginx -d nnamdidevops.uk -d www.nnamdidevops.ukShow more lines
 
-Step 5: Verify HTTPS
+# Step 5: Verify HTTPS
 Your site is now HTTPS-secured.
 Verify in your browser:
 https://nnamdidevops.uk
 
-Check certificate details:
+# Check certificate details:
 Shellsudo certbot certificatesShow more lines
 
-Understanding What the Pipeline Does
+## Understanding What the Pipeline Does
 
 Triggered by pushing to main
 Logs into Docker Hub
