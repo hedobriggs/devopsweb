@@ -30,13 +30,14 @@ For this pipeline to work, you must already have an EC2 server running with the 
 ## 🐳 Your Dockerfile (The Heart of the Deployment)
 
 Before anything can be deployed, your app needs to be packaged into a Docker image.  
-Here is the Dockerfile used in the repository:
+The Dockerfile and its contents is found in the code file in the repository:
 
 
 ## Secure the Website on AWS EC2 Using Nginx and Let's Encrypt (Certbot)
 ### Step 1: Install and Start Nginx
 Nginx will act as your reverse proxy and HTTPS termination layer.
-- sudo dnf install -y nginxsudo systemctl enable --now nginxShow more lines
+- sudo dnf install -y
+- nginxsudo systemctl enable --now nginx
 
 ### Step 2: Install Certbot (Let's Encrypt Client)
 Install Certbot with Nginx support:
@@ -65,12 +66,12 @@ Test and reload:
 Your site should now load over HTTP.
 
 ### Step 4: Request Your SSL Certificate
-sudo certbot --nginx -d nnamdidevops.uk -d www.nnamdidevops.uk
+- sudo certbot --nginx -d nnamdidevops.uk -d www.nnamdidevops.uk
 
 ### Step 5: Verify HTTPS
 Your site is now HTTPS-secured.
 Verify in your browser:
-https://nnamdidevops.uk
+- https://nnamdidevops.uk
 
 **Check certificate details:**
 Shellsudo certbot certificatesShow more lines
@@ -80,7 +81,7 @@ Shellsudo certbot certificatesShow more lines
 - Triggered by pushing to main
 - Logs into Docker Hub
 - Builds and pushes the Docker image
-- SSHes into your EC2 instance
+- SSH"es" into your EC2 instance
 - Stops, removes, pulls, and runs the new container
 
 ![Guthub Actions](GitHub-Actions.png)
