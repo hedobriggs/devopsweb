@@ -1,62 +1,72 @@
-name: Deploy to EC2 with SonarQube Scan
+name: Deployment Pipeline
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      # Debug step to confirm the SonarQube URL is correct
-      - name: Debug Sonar URL
-        run: echo "URL is $SONAR_HOST_URL"
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-      # SonarQube Scan
+      # -------------------------
+      # SonarQube Code Scan
+      # -------------------------
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.projectKey=myproject
-            -Dsonar.sources=.
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
 
-      # Build Docker image
+      # -------------------------
+      # Login to Docker Hub
+      # -------------------------
+      - name: Login to Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # -------------------------
+      # Build Docker Image
+      # -------------------------
       - name: Build Docker image
-        run: docker build -t myapp .
+        run: |
+          TAG=${GITHUB_RUN_NUMBER}
+          docker build -t ${{ secrets.DOCKERHUB_REPO }}:$TAG .
 
-      # Save Docker image to tar
-      - name: Save Docker image
-        run: docker save myapp -o myapp.tar
+      # -------------------------
+      # Trivy Vulnerability Scan
+      # -------------------------
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_REPO }}:${{ github.run_number }}
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
 
-      # Copy Docker image to EC2
-      - name: Copy image to EC2
-        uses: appleboy/scp-action@v0.1.4
+      # -------------------------
+      # Push Image After Scan Passes
+      # -------------------------
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_REPO }}:${{ github.run_number }}
+
+      # -------------------------
+      # Deploy to EC2
+      # -------------------------
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "myapp.tar"
-          target: "/home/ec2-user/"
-
-      # Deploy on EC2
-      - name: Deploy on EC2
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker load -i myapp.tar
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d -p 80:80 --name myapp myapp
+            docker stop app || true
+            docker rm app || true
+            docker pull ${{ secrets.DOCKERHUB_REPO }}:${{ github.run_number }}
+            docker run -d --name app -p 80:80 ${{ secrets.DOCKERHUB_REPO }}:${{ github.run_number }}
