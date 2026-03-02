@@ -1,4 +1,6 @@
-FROM nginx:alpine:3.23.4
+FROM nginx:alpine
+
+RUN apk update && upgrade
 
 WORKDIR usr/share/nginx/html
 
